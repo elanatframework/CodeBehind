@@ -5,7 +5,6 @@ namespace CodeBehind
     public abstract class CodeBehindModel
     {
         public string ResponseText = "";
-        public string WebFormsValue = "";
         public bool IgnoreView = false;
         public bool? IgnoreLayout = null;
         public string? WebSocketId = null;
@@ -60,11 +59,6 @@ namespace CodeBehind
         public void WriteLine(long Number)
         {
             Write(Number + Environment.NewLine);
-        }
-
-        public void Control(WebForms Forms)
-        {
-            WebFormsValue = Forms.GetFormsActionData();
         }
 
         public void IgnoreAll()
