@@ -18,7 +18,6 @@ namespace SetCodeBehind
         private static MethodInfo StaticMethodGetWebSocketId;
         private static MethodInfo StaticMethodGetSSEId;
         private static MethodInfo StaticMethodGetUseSSE;
-        private static MethodInfo StaticMethodGetWebFormsValue;
         private static MethodInfo StaticMethodRunControllerName;
         private static MethodInfo StaticMethodControllerHasFound;
         private static readonly object CompileLock = new object();
@@ -258,14 +257,6 @@ namespace SetCodeBehind
             return StaticMethodGetUseSSE;
         }
 
-        internal static MethodInfo CompileAspxStaticMethodGetWebFormsValue()
-        {
-            if (StaticMethodGetWebFormsValue == null)
-                StaticMethodGetWebFormsValue = CompileAspxAndReturnType().GetMethod("GetWebFormsValue");
-
-            return StaticMethodGetWebFormsValue;
-        }
-
         internal static MethodInfo CompileAspxStaticMethodRunControllerName()
         {
             if (StaticMethodRunControllerName == null)
@@ -358,7 +349,7 @@ namespace SetCodeBehind
             }
         }
 
-        /// <param name="BreakExist">After The Project Is Complete, Set The BreakExist Value To true.</param>
+        /// <param name="BreakExist">After the Project is Complete, Set BreakExist to true.</param>
         public static void Initialization(bool BreakExist = false)
         {
             StaticObject.SetValue();
@@ -384,7 +375,6 @@ namespace SetCodeBehind
             StaticMethodGetWebSocketId = null;
             StaticMethodGetSSEId = null;
             StaticMethodGetUseSSE = null;
-            StaticMethodGetWebFormsValue = null;
             StaticMethodRunControllerName = null;
             StaticMethodControllerHasFound = null;
 
