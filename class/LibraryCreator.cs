@@ -99,7 +99,6 @@ namespace SetCodeBehind
             CodeBehindViews += "    {" + Environment.NewLine;
             CodeBehindViews += "        private CodeBehind.HtmlData.NameValueCollection ViewData = new CodeBehind.HtmlData.NameValueCollection();" + Environment.NewLine;
             CodeBehindViews += "        private string RequestPath { get; set; } = \"\";" + Environment.NewLine;
-            CodeBehindViews += "        private string WebFormsValue { get; set; } = \"\";" + Environment.NewLine;
             CodeBehindViews += "        private string CallerViewPath { get; set; } = \"\";" + Environment.NewLine;
             CodeBehindViews += "        private string CallerViewDirectoryPath { get; set; } = \"\";" + Environment.NewLine;
             CodeBehindViews += "        private bool FoundPage { get; set; } = true;" + Environment.NewLine;
@@ -293,7 +292,7 @@ namespace SetCodeBehind
             CodeBehindViews += "            return SetPageLoadByFullPath(path, null, \"\").GetAwaiter().GetResult();" + Environment.NewLine;
             CodeBehindViews += "        }" + Environment.NewLine + Environment.NewLine;
 
-            CodeBehindViews += "        public async Task<string> RunController(HttpContext context, string ViewPath, object ModelClass, CodeBehind.HtmlData.NameValueCollection ViewData, string DownloadFilePath, bool? IgnoreLayout, string WebFormsValue, string? WebSocketId, string? SSEId, bool? UseSSE)" + Environment.NewLine;
+            CodeBehindViews += "        public async Task<string> RunController(HttpContext context, string ViewPath, object ModelClass, CodeBehind.HtmlData.NameValueCollection ViewData, string DownloadFilePath, bool? IgnoreLayout, string? WebSocketId, string? SSEId, bool? UseSSE)" + Environment.NewLine;
             CodeBehindViews += "        {" + Environment.NewLine;
             CodeBehindViews += "            if (!string.IsNullOrEmpty(DownloadFilePath))" + Environment.NewLine;
             CodeBehindViews += "            {" + Environment.NewLine;
@@ -302,8 +301,7 @@ namespace SetCodeBehind
             CodeBehindViews += "            }" + Environment.NewLine + Environment.NewLine;
             CodeBehindViews += "            ViewData.AddList(ViewData.GetList());" + Environment.NewLine;
             CodeBehindViews += "            if (IgnoreLayout != null)" + Environment.NewLine;
-            CodeBehindViews += "                this.IgnoreLayout = IgnoreLayout;" + Environment.NewLine;
-            CodeBehindViews += "            this.WebFormsValue += WebFormsValue;" + Environment.NewLine + Environment.NewLine;
+            CodeBehindViews += "                this.IgnoreLayout = IgnoreLayout;" + Environment.NewLine + Environment.NewLine;
             CodeBehindViews += "            if (string.IsNullOrEmpty(ViewPath))" + Environment.NewLine;
             CodeBehindViews += "                return \"\";" + Environment.NewLine + Environment.NewLine;
 
@@ -396,16 +394,6 @@ namespace SetCodeBehind
             CodeBehindViews += "        public bool ControllerHasFound()" + Environment.NewLine;
             CodeBehindViews += "        {" + Environment.NewLine;
             CodeBehindViews += "            return FoundController;" + Environment.NewLine;
-            CodeBehindViews += "        }" + Environment.NewLine + Environment.NewLine;
-
-            CodeBehindViews += "        public string GetWebFormsValue()" + Environment.NewLine;
-            CodeBehindViews += "        {" + Environment.NewLine;
-            CodeBehindViews += "            return WebFormsValue;" + Environment.NewLine;
-            CodeBehindViews += "        }" + Environment.NewLine + Environment.NewLine;
-
-            CodeBehindViews += "        private void Control(WebForms Forms)" + Environment.NewLine;
-            CodeBehindViews += "        {" + Environment.NewLine;
-            CodeBehindViews += "            WebFormsValue += Forms.GetFormsActionData();" + Environment.NewLine;
             CodeBehindViews += "        }" + Environment.NewLine + Environment.NewLine;
 
             CodeBehindViews += "        private void Write(string Text)" + Environment.NewLine;
@@ -759,8 +747,7 @@ namespace SetCodeBehind
                 bool IsAsyncPageLoad = PageLoadMethod != null && typeof(Task).IsAssignableFrom(PageLoadMethod.ReturnType);
 
 
-                ReturnValue += "                " + (IsAsyncPageLoad? "await " : " ") + ClassName + ".PageLoad(context);" + Environment.NewLine;
-                ReturnValue += "                this.WebFormsValue += " + ClassName + ".WebFormsValue;" + Environment.NewLine + Environment.NewLine;
+                ReturnValue += "                " + (IsAsyncPageLoad? "await " : " ") + ClassName + ".PageLoad(context);" + Environment.NewLine + Environment.NewLine;
 
                 ReturnValue += "                if (" + ClassName + ".WebSocketId != null)" + Environment.NewLine;
                 ReturnValue += "                    this.WebSocketId = " + ClassName + ".WebSocketId;" + Environment.NewLine + Environment.NewLine;
@@ -786,7 +773,7 @@ namespace SetCodeBehind
                     ReturnValue += "                    }" + Environment.NewLine;
                     ReturnValue += "                    else" + Environment.NewLine;
                     ReturnValue += "                    {" + Environment.NewLine;
-                    ReturnValue += "                        string ControllerReturnValue = " +  "await RunController(context, " + ClassName + ".ViewPath, " + ClassName + ".CodeBehindModel, " + ClassName + ".ViewData, " + ClassName + ".DownloadFilePath, " + ClassName + ".IgnoreLayout, " + ClassName + ".WebFormsValue, " + ClassName + ".WebSocketId, " + ClassName + ".SSEId, " + ClassName + ".UseSSE) + " + ClassName + ".ResponseText;" + Environment.NewLine;
+                    ReturnValue += "                        string ControllerReturnValue = " +  "await RunController(context, " + ClassName + ".ViewPath, " + ClassName + ".CodeBehindModel, " + ClassName + ".ViewData, " + ClassName + ".DownloadFilePath, " + ClassName + ".IgnoreLayout, " + ClassName + ".WebSocketId, " + ClassName + ".SSEId, " + ClassName + ".UseSSE) + " + ClassName + ".ResponseText;" + Environment.NewLine;
                     ReturnValue += "                        cache.SetControllerCache(\"" + TmpClass.Name + "\" + cbcc.CacheFilter, ControllerReturnValue, " + ControllerCache.Duration + ");" + Environment.NewLine;
                     ReturnValue += "                        return ControllerReturnValue;" + Environment.NewLine;
                     ReturnValue += "                    }" + Environment.NewLine;
@@ -797,7 +784,7 @@ namespace SetCodeBehind
                 ReturnValue += "                if (" + ClassName + ".IgnoreViewAndModel)" + Environment.NewLine;
                 ReturnValue += "                    TmpViewPath = \"\";" + Environment.NewLine + Environment.NewLine;
 
-                ReturnValue += "                return " + "await RunController(context, TmpViewPath, " + ClassName + ".CodeBehindModel, " + ClassName + ".ViewData, " + ClassName + ".DownloadFilePath, " + ClassName + ".IgnoreLayout, " + ClassName + ".WebFormsValue, " + ClassName + ".WebSocketId, " + ClassName + ".SSEId, " + ClassName + ".UseSSE) + " + ClassName + ".ResponseText;" + Environment.NewLine + Environment.NewLine;
+                ReturnValue += "                return " + "await RunController(context, TmpViewPath, " + ClassName + ".CodeBehindModel, " + ClassName + ".ViewData, " + ClassName + ".DownloadFilePath, " + ClassName + ".IgnoreLayout, " + ClassName + ".WebSocketId, " + ClassName + ".SSEId, " + ClassName + ".UseSSE) + " + ClassName + ".ResponseText;" + Environment.NewLine + Environment.NewLine;
             }
 
             ReturnValue += "/*{CaseCodeTemplateValueForControllerName}*/" + Environment.NewLine;
