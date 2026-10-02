@@ -34,11 +34,11 @@ Program File: Program.cs
 ```diff
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCodeBehind();
+
 var app = builder.Build();
 
-+SetCodeBehind.CodeBehindCompiler.Initialization();
-
-+app.UseCodeBehind();
+app.UseCodeBehind();
 
 app.Run();
 ```
