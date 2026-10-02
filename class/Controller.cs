@@ -6,7 +6,6 @@ namespace CodeBehind
     {
         public object CodeBehindModel { get; private set; }
         public string ResponseText = "";
-        public string WebFormsValue = "";
         public bool IgnoreViewAndModel = false;
         public bool? IgnoreLayout = null;
         public string? WebSocketId = null;
@@ -83,19 +82,6 @@ namespace CodeBehind
             CodeBehindModel = ModelClass;
         }
 
-        public void Control(WebForms Forms)
-        {
-            WebFormsValue = Forms.GetFormsActionData();
-        }
-
-        public void Control(WebForms Forms, bool IgnoreAll)
-        {
-            Control(Forms);
-
-            if (IgnoreAll)
-               this.IgnoreAll();
-        }
-
         public void IgnoreAll()
         {
             IgnoreViewAndModel = true;
@@ -160,7 +146,7 @@ namespace CodeBehind
                 return ResponseText;
 
             CodeBehindExecute execute = new CodeBehindExecute();
-            return ResponseText + execute.RunControllerValue(context, ViewPath, CodeBehindModel, ViewData, DownloadFilePath, IgnoreLayout, WebFormsValue, WebSocketId, SSEId, UseSSE);
+            return ResponseText + execute.RunControllerValue(context, ViewPath, CodeBehindModel, ViewData, DownloadFilePath, IgnoreLayout, WebSocketId, SSEId, UseSSE);
         }
 
         public async Task<string> RunAsync(HttpContext context)
@@ -172,7 +158,7 @@ namespace CodeBehind
                 return ResponseText;
 
             CodeBehindExecute execute = new CodeBehindExecute();
-            return ResponseText + await execute.RunControllerValueAsync(context, ViewPath, CodeBehindModel, ViewData, DownloadFilePath, IgnoreLayout, WebFormsValue, WebSocketId, SSEId, UseSSE);
+            return ResponseText + await execute.RunControllerValueAsync(context, ViewPath, CodeBehindModel, ViewData, DownloadFilePath, IgnoreLayout, WebSocketId, SSEId, UseSSE);
         }
 
         public void FillSegment(HttpContext context, string FillAfter = "")
