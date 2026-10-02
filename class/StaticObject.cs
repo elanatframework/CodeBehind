@@ -7,7 +7,6 @@ namespace CodeBehind
         internal static string ViewPath { get; private set; }
         internal static string DllPath { get; private set; }
         internal static string DefaultRole { get; private set; }
-        internal static string ViewPlace { get; private set; }
         internal static bool UseDefaultController { get; private set; } = false;
         internal static string DefaultController { get; private set; }
         internal static bool UseSegmentInDefaultController { get; private set; } = false;
@@ -19,7 +18,6 @@ namespace CodeBehind
         internal static int WebSocketBufferSize { get; private set; }
         internal static int SseInterval { get; private set; }
         internal static int MaxSSEConnectionsPerClient { get; private set; }
-        internal static bool UseCommentModeForWebFormsCombinate { get; private set; } = false;
 
         internal static void SetValue()
         {
@@ -46,7 +44,6 @@ namespace CodeBehind
             ViewPath = options.ViewPath;
             DllPath = options.DllPath;
             DefaultRole = options.DefaultRole;
-            ViewPlace = options.WebFormsViewPlace;
             UseDefaultController = options.UseDefaultController;
             UseSegmentInDefaultController = options.UseSegmentInDefaultController;
             SetBreakForDefaultController = options.SetBreakForDefaultController;
@@ -59,7 +56,6 @@ namespace CodeBehind
 
             SseInterval = options.SseInterval;
             MaxSSEConnectionsPerClient = options.MaxSSEConnectionsPerClient;
-            UseCommentModeForWebFormsCombinate = options.UseCommentModeForWebFormsCombinate;
 
             StaticObjectHasInitialization = true;
         }
