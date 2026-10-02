@@ -81,34 +81,6 @@ namespace CodeBehind
                     method = CodeBehindCompiler.CompileAspxStaticMethodGetUseSSE();
                     UseSSE = (bool)method.Invoke(obj, null);
 
-                    // Set Web-Forms Control
-                    method = CodeBehindCompiler.CompileAspxStaticMethodGetWebFormsValue();
-                    string WebFormsValue = (string)method.Invoke(obj, null);
-
-                    if (!string.IsNullOrEmpty(WebFormsValue))
-                    {
-                        bool HasPostBack = false;
-
-                        if (context.Request.Headers.TryGetValue("Post-Back", out var value))
-                        {
-                            if (value == "true")
-                            {
-                                HasPostBack = true;
-                                context.Response.ContentType = "text/plain";
-                            }
-                        }
-                        else if (context.Request.Headers.TryGetValue("Upgrade", out var value2))
-                        {
-                            if (value2 == "websocket")
-                                HasPostBack = true;
-                        }
-
-                        if (HasPostBack)
-                            ReturnResult = SetWebFormsCombinate(ReturnResult, WebFormsValue);
-                        else
-                            ReturnResult = SetWebFormsCombinateFirstResponse(ReturnResult, WebFormsValue);
-                    }
-
                     return ReturnResult;
                 }
 
@@ -336,7 +308,7 @@ namespace CodeBehind
             return Run(context, path);
         }
 
-        internal async Task<string> RunControllerValueAsync(HttpContext context, string ViewPath, object CodeBehindModel, NameValueCollection ViewData, string DownloadFilePath, bool? IgnoreLayout, string WebFormsValue, string? WebSocketId, string? SSEId, bool? UseSSE)
+        internal async Task<string> RunControllerValueAsync(HttpContext context, string ViewPath, object CodeBehindModel, NameValueCollection ViewData, string DownloadFilePath, bool? IgnoreLayout, string? WebSocketId, string? SSEId, bool? UseSSE)
         {
             try
             {
@@ -359,7 +331,7 @@ namespace CodeBehind
                 Type type = CodeBehindCompiler.CompileAspxAndReturnType();
                 object obj = Activator.CreateInstance(type);
                 MethodInfo method = CodeBehindCompiler.CompileAspxStaticMethodRunControllerName();
-                object[] Arguments = new object[] { context, ViewPath, CodeBehindModel, ViewData, DownloadFilePath, IgnoreLayout, WebFormsValue, WebSocketId, SSEId, UseSSE };
+                object[] Arguments = new object[] { context, ViewPath, CodeBehindModel, ViewData, DownloadFilePath, IgnoreLayout, WebSocketId, SSEId, UseSSE };
                 string ReturnResult = await (Task<string>)method.Invoke(obj, Arguments);
 
                 method = CodeBehindCompiler.CompileAspxStaticMethodPageHasFound();
@@ -374,37 +346,6 @@ namespace CodeBehind
                 method = CodeBehindCompiler.CompileAspxStaticMethodGetUseSSE();
                 UseSSE = (bool)method.Invoke(obj, null);
 
-                // Set Web-Forms Control
-                method = CodeBehindCompiler.CompileAspxStaticMethodGetWebFormsValue();
-                string TmpWebFormsValue = (string)method.Invoke(obj, null);
-
-                if (!string.IsNullOrEmpty(TmpWebFormsValue))
-                {
-                    bool HasPostBack = false;
-
-                    if (context.Request.Headers.TryGetValue("Post-Back", out var value))
-                    {
-                        if (value == "true")
-                        {
-                            HasPostBack = true;
-                            context.Response.ContentType = "text/plain";
-                        }
-                    }
-                    else if (context.Request.Headers.TryGetValue("Upgrade", out var value2))
-                    {
-                        if (value2 == "websocket")
-                            HasPostBack = true;
-                    }
-
-                    if (HasPostBack)
-                    {
-                        ReturnResult = SetWebFormsCombinate(ReturnResult, TmpWebFormsValue);
-                        context.Response.ContentType = "text/plain";
-                    }
-                    else
-                        ReturnResult = SetWebFormsCombinateFirstResponse(ReturnResult, TmpWebFormsValue);
-                }
-
                 return ReturnResult;
             }
             catch (Exception ex)
@@ -414,9 +355,9 @@ namespace CodeBehind
             }
         }
 
-        internal string RunControllerValue(HttpContext context, string ViewPath, object CodeBehindModel, NameValueCollection ViewData, string DownloadFilePath, bool? IgnoreLayout, string WebFormsValue, string? WebSocketId, string? SSEId, bool? UseSSE)
+        internal string RunControllerValue(HttpContext context, string ViewPath, object CodeBehindModel, NameValueCollection ViewData, string DownloadFilePath, bool? IgnoreLayout, string? WebSocketId, string? SSEId, bool? UseSSE)
         {
-            return RunControllerValueAsync(context, ViewPath, CodeBehindModel, ViewData, DownloadFilePath, IgnoreLayout, WebFormsValue, WebSocketId, SSEId, UseSSE).GetAwaiter().GetResult();
+            return RunControllerValueAsync(context, ViewPath, CodeBehindModel, ViewData, DownloadFilePath, IgnoreLayout, WebSocketId, SSEId, UseSSE).GetAwaiter().GetResult();
         }
 
         public string RunController(object ControllerClass, HttpContext context)
@@ -527,32 +468,6 @@ namespace CodeBehind
                 method = CodeBehindCompiler.CompileAspxStaticMethodGetUseSSE();
                 UseSSE = (bool)method.Invoke(obj, null);
 
-                // Set Web-Forms Control
-                method = CodeBehindCompiler.CompileAspxStaticMethodGetWebFormsValue();
-                string TmpWebFormsValue = (string)method.Invoke(obj, null);
-
-                if (!string.IsNullOrEmpty(TmpWebFormsValue))
-                {
-                    bool HasPostBack = false;
-
-                    if (context.Request.Headers.TryGetValue("Post-Back", out var value))
-                        if (value == "true")
-                        {
-                            HasPostBack = true;
-                            context.Response.ContentType = "text/plain";
-                        }
-                        else if (context.Request.Headers.TryGetValue("Upgrade", out var value2))
-                            HasPostBack = (value2 == "websocket");
-
-                    if (HasPostBack)
-                    {
-                        ReturnResult = SetWebFormsCombinate(ReturnResult, TmpWebFormsValue);
-                        context.Response.ContentType = "text/plain";
-                    }
-                    else
-                        ReturnResult = SetWebFormsCombinateFirstResponse(ReturnResult, TmpWebFormsValue);
-                }
-
                 return ReturnResult;
             }
             catch (Exception ex)
@@ -654,27 +569,6 @@ namespace CodeBehind
             }
 
             return await RunControllerAsync(ControllerClass, context);
-        }
-
-        private string SetWebFormsCombinate(string ResponseText, string WebFormsValue)
-        {
-            if (!string.IsNullOrEmpty(ResponseText))
-            {
-                if (StaticObject.UseCommentModeForWebFormsCombinate)
-                    return ResponseText + WebFormsValue.ExportActionControlsToHtmlComment(true);
-
-                return "[web-forms]" + "\nst" + StaticObject.ViewPlace + "=" + ResponseText.Replace('\n'.ToString(), "$[ln];") + '\n' + WebFormsValue;
-            }
-            else
-                return WebFormsValue.ExportActionControlsToResponse();
-        }
-
-        private string SetWebFormsCombinateFirstResponse(string ResponseText, string WebFormsValue)
-        {
-            if (string.IsNullOrEmpty(ResponseText))
-                return "";
-
-            return ResponseText + WebFormsValue.ExportActionControlsToHtmlComment(true);
         }
     }
 }
