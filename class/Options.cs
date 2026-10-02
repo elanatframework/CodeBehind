@@ -22,7 +22,6 @@ namespace CodeBehind
         internal string WebFormsScriptPath { private set; get; }
         internal bool AutoCreateWebFormsScript { private set; get; }
         internal bool RecreateWebFormsScriptAfterRecompile { private set; get; }
-        internal string WebFormsViewPlace { private set; get; }
         internal bool UseDefaultController { private set; get; }
         internal string DefaultController { private set; get; }
         internal bool UseSegmentInDefaultController { private set; get; }
@@ -40,7 +39,6 @@ namespace CodeBehind
         internal bool SetTextHtmlContentTypeForPostBack { private set; get; }
         internal int SseInterval { private set; get; }
         internal int MaxSSEConnectionsPerClient { private set; get; }
-        internal bool UseCommentModeForWebFormsCombinate { private set; get; }
 
         internal CodeBehindOptions()
         {
@@ -77,8 +75,6 @@ namespace CodeBehind
                 WebFormsScriptPath = reader.ReadLine().GetTextAfterValue("=");
                 AutoCreateWebFormsScript = (reader.ReadLine().GetTextAfterValue("=").Trim() == "true");
                 RecreateWebFormsScriptAfterRecompile = (reader.ReadLine().GetTextAfterValue("=").Trim() == "true");
-                WebFormsViewPlace = reader.ReadLine().GetTextAfterValue("=").Trim();
-                UseCommentModeForWebFormsCombinate = (reader.ReadLine().GetTextAfterValue("=").Trim() == "true");
                 UseDefaultController = (reader.ReadLine().GetTextAfterValue("=").Trim() == "true");
                 DefaultController = reader.ReadLine().GetTextAfterValue("=").Trim();
                 UseSegmentInDefaultController = (reader.ReadLine().GetTextAfterValue("=").Trim() == "true");
@@ -123,8 +119,6 @@ namespace CodeBehind
                 "web_forms_script_path=/script",
                 "auto_create_web_forms_script=true",
                 "recreate_web_forms_script_after_recompile=false",
-                "web_forms_view_place=<body>",
-                "use_comment_mode_for_web_forms_combinate=false",
                 "use_default_controller=true",
                 "default_controller=DefaultController",
                 "use_segment_in_default_controller=true",
@@ -144,7 +138,8 @@ namespace CodeBehind
                 "max_sse_connections_per_client=3"
             };
 
-            bool HasMoreOption = false;
+            Dictionary<string, string> UserOptions = new Dictionary<string, string>();
+            List<string> OutdatedOptions = new List<string>();
 
             if (File.Exists(OptionsFilePath))
             {
@@ -152,38 +147,103 @@ namespace CodeBehind
                 {
                     reader.ReadLine();
 
-                    int LineCount = 1;
                     string line;
+
                     while ((line = reader.ReadLine()) != null)
                     {
-                        LineCount++;
-                        int i = 0;
-                        foreach (string option in OptionsList)
-                        {
-                            if (option.GetTextBeforeValue("=") == line.GetTextBeforeValue("="))
-                            {
-                                OptionsList[i] = OptionsList[i].GetTextBeforeValue("=") + "=" + line.GetTextAfterValue("=");
+                        if (line.Trim().StartsWith(";"))
+                            continue;
 
-                                break;
-                            }
-                            i++;
-                        }
+                        string key = line.GetTextBeforeValue("=");
+
+                        if (string.IsNullOrEmpty(key))
+                            continue;
+
+                        UserOptions[key] = line.GetTextAfterValue("=");
                     }
-
-                    if (LineCount < OptionsList.Count)
-                        HasMoreOption = true;
                 }
             }
 
-            if (!File.Exists(OptionsFilePath) || HasMoreOption)
+            List<string> NewOptionsList = new List<string>
             {
-                var file = File.CreateText(OptionsFilePath);
+                OptionsList[0]
+            };
 
-                foreach (string line in OptionsList)
-                    file.WriteLine(line);
+            HashSet<string> NewOptionKeys = new HashSet<string>();
 
-                file.Dispose();
-                file.Close();
+            foreach (string option in OptionsList.Skip(1))
+            {
+                string key = option.GetTextBeforeValue("=");
+                string defaultValue = option.GetTextAfterValue("=");
+
+                NewOptionKeys.Add(key);
+
+                if (UserOptions.TryGetValue(key, out string value))
+                {
+                    NewOptionsList.Add(key + "=" + value);
+                    UserOptions.Remove(key);
+                }
+                else
+                {
+                    NewOptionsList.Add(key + "=" + defaultValue);
+                }
+            }
+
+            // Options that no longer exist in the new version.
+            foreach (var option in UserOptions)
+            {
+                if (!NewOptionKeys.Contains(option.Key))
+                {
+                    OutdatedOptions.Add(option.Key + "=" + option.Value);
+                }
+            }
+
+            // Add outdated options.
+            foreach (string option in OutdatedOptions)
+            {
+                NewOptionsList.Add("");
+                NewOptionsList.Add(";outdate");
+                NewOptionsList.Add(option);
+            }
+
+            bool RewriteOptionsFile = !File.Exists(OptionsFilePath);
+
+            if (!RewriteOptionsFile)
+            {
+                List<string> CurrentOptions = new List<string>();
+
+                using (StreamReader reader = new StreamReader(OptionsFilePath))
+                {
+                    string line;
+
+                    while ((line = reader.ReadLine()) != null)
+                        CurrentOptions.Add(line);
+                }
+
+                if (CurrentOptions.Count != NewOptionsList.Count)
+                {
+                    RewriteOptionsFile = true;
+                }
+                else
+                {
+                    for (int i = 0; i < CurrentOptions.Count; i++)
+                    {
+                        if (CurrentOptions[i] != NewOptionsList[i])
+                        {
+                            RewriteOptionsFile = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (RewriteOptionsFile)
+            {
+                using (StreamWriter writer = new StreamWriter(OptionsFilePath, false))
+                {
+                    foreach (string line in NewOptionsList)
+                        writer.WriteLine(line);
+                }
             }
         }
     }
