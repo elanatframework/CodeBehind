@@ -1632,8 +1632,7 @@ namespace SetCodeBehind
                 if (UseSegment)
                     TmpMethodCodeTemplateValue += "            controller.Segment.AddList(Segment.GetList());" + Environment.NewLine;
 
-                TmpMethodCodeTemplateValue += "            " + ((string.IsNullOrEmpty(ControllerConstructor) && IsAsyncController) ? "await " : "") + "controller.PageLoad" + ControllerConstructor + ";" + Environment.NewLine;
-                TmpMethodCodeTemplateValue += "            this.WebFormsValue += controller.WebFormsValue;" + Environment.NewLine + Environment.NewLine;
+                TmpMethodCodeTemplateValue += "            " + ((string.IsNullOrEmpty(ControllerConstructor) && IsAsyncController) ? "await " : "") + "controller.PageLoad" + ControllerConstructor + ";" + Environment.NewLine + Environment.NewLine;
 
                 TmpMethodCodeTemplateValue += "            if (controller.WebSocketId != null)" + Environment.NewLine;
                 TmpMethodCodeTemplateValue += "                WebSocketId = controller.WebSocketId;" + Environment.NewLine + Environment.NewLine;
@@ -1693,8 +1692,7 @@ namespace SetCodeBehind
                         TmpMethodCodeTemplateValue += "                    return \"\";" + Environment.NewLine;
                         TmpMethodCodeTemplateValue += "                }" + Environment.NewLine + Environment.NewLine;
 
-                        TmpMethodCodeTemplateValue += "                controller.ResponseText += model.ResponseText;" + Environment.NewLine;
-                        TmpMethodCodeTemplateValue += "                this.WebFormsValue += model.WebFormsValue;" + Environment.NewLine + Environment.NewLine;
+                        TmpMethodCodeTemplateValue += "                controller.ResponseText += model.ResponseText;" + Environment.NewLine + Environment.NewLine;
 
                         TmpMethodCodeTemplateValue += "                if (model.WebSocketId != null)" + Environment.NewLine;
                         TmpMethodCodeTemplateValue += "                    WebSocketId = model.WebSocketId;" + Environment.NewLine + Environment.NewLine;
@@ -1758,7 +1756,6 @@ namespace SetCodeBehind
                         TmpMethodCodeTemplateValue += "                return \"\";" + Environment.NewLine;
                         TmpMethodCodeTemplateValue += "            }" + Environment.NewLine + Environment.NewLine;
 
-                        TmpMethodCodeTemplateValue += "            this.WebFormsValue += model.WebFormsValue;" + Environment.NewLine;
                         TmpMethodCodeTemplateValue += "            ReturnValue += model.ResponseText;" + Environment.NewLine + Environment.NewLine;
 
                         TmpMethodCodeTemplateValue += "            if (model.WebSocketId != null)" + Environment.NewLine;
@@ -1906,8 +1903,7 @@ namespace SetCodeBehind
                     if (UseSegment)
                         TmpMethodCodeTemplateValue += "            controller.Segment.AddList(Segment.GetList());" + Environment.NewLine;
 
-                    TmpMethodCodeTemplateValue += "            " + ((string.IsNullOrEmpty(ControllerConstructor) && IsAsyncController) ? "await " : "") + "controller.PageLoad" + ControllerConstructor + ";" + Environment.NewLine;
-                    TmpMethodCodeTemplateValue += "            this.WebFormsValue += controller.WebFormsValue;" + Environment.NewLine + Environment.NewLine;
+                    TmpMethodCodeTemplateValue += "            " + ((string.IsNullOrEmpty(ControllerConstructor) && IsAsyncController) ? "await " : "") + "controller.PageLoad" + ControllerConstructor + ";" + Environment.NewLine + Environment.NewLine;
 
                     TmpMethodCodeTemplateValue += "            if (controller.IgnoreLayout != null)" + Environment.NewLine;
                     TmpMethodCodeTemplateValue += "                IgnoreLayout = controller.IgnoreLayout;" + Environment.NewLine + Environment.NewLine;
@@ -1963,8 +1959,7 @@ namespace SetCodeBehind
                         TmpMethodCodeTemplateValue += "                    return \"\";" + Environment.NewLine;
                         TmpMethodCodeTemplateValue += "                }" + Environment.NewLine + Environment.NewLine;
 
-                        TmpMethodCodeTemplateValue += "                controller.ResponseText += model.ResponseText;" + Environment.NewLine;
-                        TmpMethodCodeTemplateValue += "                this.WebFormsValue += model.WebFormsValue;" + Environment.NewLine + Environment.NewLine;
+                        TmpMethodCodeTemplateValue += "                controller.ResponseText += model.ResponseText;" + Environment.NewLine + Environment.NewLine;
 
                         TmpMethodCodeTemplateValue += "                if (model.WebSocketId != null)" + Environment.NewLine;
                         TmpMethodCodeTemplateValue += "                    WebSocketId = model.WebSocketId;" + Environment.NewLine + Environment.NewLine;
@@ -2023,8 +2018,7 @@ namespace SetCodeBehind
                         TmpMethodCodeTemplateValue += "                return \"\";" + Environment.NewLine;
                         TmpMethodCodeTemplateValue += "            }" + Environment.NewLine + Environment.NewLine;
 
-                        TmpMethodCodeTemplateValue += "            ReturnValue += model.ResponseText;" + Environment.NewLine;
-                        TmpMethodCodeTemplateValue += "            this.WebFormsValue += model.WebFormsValue;" + Environment.NewLine + Environment.NewLine;
+                        TmpMethodCodeTemplateValue += "            ReturnValue += model.ResponseText;" + Environment.NewLine + Environment.NewLine;
 
                         TmpMethodCodeTemplateValue += "            if (model.WebSocketId != null)" + Environment.NewLine;
                         TmpMethodCodeTemplateValue += "                WebSocketId = model.WebSocketId;" + Environment.NewLine + Environment.NewLine;
