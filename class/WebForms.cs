@@ -1,5 +1,5 @@
-// WebForms.cs 2.1.1 - The Back-End Part of WebForms Core Technology, Owned by Elanat (https://elanat.net)
-// Compatible with WebFormsJS version 2.1
+// WebForms.cs 2.2 - The Back-End Part of WebForms Core Technology, Owned by Elanat (https://elanat.net)
+// Compatible with WebFormsJS version 2.2
 
 using System.Text;
 
@@ -151,6 +151,7 @@ namespace CodeBehind
         public void SetCheckedValue(string InputPlace, string Value, bool Checked) => Add("ks" + InputPlace, Value + GS + (Checked ? "1" : "0"));
         public void SetCheckedIndex(string InputPlace, string Index, bool Checked) => Add("ki" + InputPlace, Index + GS + (Checked ? "1" : "0"));
         public void SetCheckedIndex(string InputPlace, int Index, bool Checked) => SetCheckedIndex(InputPlace, Index.ToString(), Checked);
+        public void SetCustomValidity(string InputPlace, string Text) => Add("cv" + InputPlace, Text.Replace('\n'.ToString(), "$[ln];"));
 
         // Insert
         // Creates the Data only if it does not exist; otherwise, does nothing.
@@ -184,12 +185,16 @@ namespace CodeBehind
         public void Delete(string InputPlace) => Add("de" + InputPlace);
         public void DeleteParent(string InputPlace) => Add("dp" + InputPlace);
 
-        // Tag
+        // Tag Transformation
         public void SwapTag(string InputPlace, string OutputPlace) => Add("sp" + InputPlace, OutputPlace);
-        public void SetReflection(string InputPlace, string Tag) => Add("sR" + InputPlace, Tag);
-        public void SetReflectionByOutputPlace(string InputPlace, string OutputPlace) => Add("iR" + InputPlace, OutputPlace);
+        public void SetReflect(string InputPlace, string Tag) => Add("sR" + InputPlace, Tag);
+        public void SetReflectByOutputPlace(string InputPlace, string OutputPlace) => Add("iR" + InputPlace, OutputPlace);
         public void SetMorph(string InputPlace, string Tag) => Add("sM" + InputPlace, Tag);
         public void SetMorphByOutputPlace(string InputPlace, string OutputPlace) => Add("iM" + InputPlace, OutputPlace);
+        // The Snapshot and Rollback Mechanism is Sensitive to DOM Changes; It is Recommended to Assign a Stable ID to the Selected Element.
+        // InputPlace: Only One Tag 
+        public void Snapshot(string InputPlace, string Key = "", bool Permanent = false) => Add("rS" + InputPlace, (string.IsNullOrEmpty(Key)? InputPlace : Key) + (Permanent ? GS + "1" : ""));
+        public void Rollback(string InputPlace, string Key = "", bool Permanent = false) => Add("rB" + InputPlace, (string.IsNullOrEmpty(Key)? InputPlace : Key) + (Permanent ? GS + "1" : ""));
 
         // Browser
         public void ChangeUrl(string Url) => Add("cu", Url);
@@ -419,6 +424,9 @@ namespace CodeBehind
 
         // Debug
         public void CreateDebugger(bool Pause = false) => Add("Dc", Pause? "1" : "0");
+        public void Try() => Add("tr");
+        public void Catch() => Add("ca");
+        public void Comment(string Text) => Add("//", Text);
 
         // Service Worker
         // To Use Service Worker, You Need To Add The Elanat Dedicated Module (service-worker.js) On The Client Side
@@ -450,6 +458,8 @@ namespace CodeBehind
         public void LoadState(string Path) => Add("ls", Path);
         public void DeleteState(string Path = null) => Add("DS", Path);
         public void DeleteAllState() => Add("DS", "*");
+        public void LockQueue(string Millisecond) => Add("lq", Millisecond);
+        public void LockQueue(int Millisecond) => LockQueue(Millisecond.ToString());
 
         // Cookie
         public void SetCookie(string Key, string Value, string Seconds, string Path = null) => Add("sC", Key + GS + Value + GS + Seconds + (!string.IsNullOrEmpty(Path) ? GS + Path : ""));
@@ -485,6 +495,14 @@ namespace CodeBehind
         public void InsertSaveValue(string CacheKey, string Value) => Add("SI", CacheKey + GS + Value.Replace('\n'.ToString(), "$[ln];"));
         public void AppendSaveValue(string CacheKey, string Value) => Add("SP", CacheKey + GS + Value.Replace('\n'.ToString(), "$[ln];"));
         public void ReplaceSaveValue(string CacheKey, string SearchValue, string Value) => Add("SR", CacheKey + GS + Value.Replace('\n'.ToString(), "$[ln];") + GS + SearchValue.Replace('\n'.ToString(), "$[ln];"));
+        // Is Regex Replace
+        public void SetFormatSaveValue(string CacheKey, string Regex, string Replacement) => Add("SF", CacheKey + GS + Regex + GS + Replacement.Replace('\n'.ToString(), "$[ln];"));
+        // Operator: +, -, *, /, %, //, **
+        public void SetArithmeticSaveValue(string CacheKey, string Operator , string Value) => Add("SM", CacheKey + GS + Operator + GS + Value);
+        public void SetArithmeticSaveValue(string CacheKey, string Operator , int Value) => SetArithmeticSaveValue(CacheKey, Operator, Value);
+        // Operation: textafter, textafterlast, textbefore, textbeforelast, substring, remove
+        public void SetTextOperationSaveValue(string CacheKey, string Operation , string Value1, string Value2) => Add("ST", CacheKey + GS + Operation + GS + Value1 + GS + Value2);
+        public void SetTextOperationSaveValue(string CacheKey, string Operation , int Value1, int Value2) => SetTextOperationSaveValue(CacheKey, Operation, Value1.ToString(), Value2.ToString());
 
         // Cache
         public void CacheId(string InputPlace, string Key = ".") => Add("@ci" + InputPlace, Key);
@@ -518,6 +536,14 @@ namespace CodeBehind
         public void InsertCacheValue(string CacheKey, string Value) => Add("CI", CacheKey + GS + Value.Replace('\n'.ToString(), "$[ln];"));
         public void AppendCacheValue(string CacheKey, string Value) => Add("CP", CacheKey + GS + Value.Replace('\n'.ToString(), "$[ln];"));
         public void ReplaceCacheValue(string CacheKey, string SearchValue, string Value) => Add("CR", CacheKey + GS + Value.Replace('\n'.ToString(), "$[ln];") +  GS + SearchValue.Replace('\n'.ToString(), "$[ln];"));
+        // Is Regex Replace
+        public void SetFormatCacheValue(string CacheKey, string Regex, string Replacement) => Add("CF", CacheKey + GS + Regex + GS + Replacement.Replace('\n'.ToString(), "$[ln];"));
+        // Operator: +, -, *, /, %, //, **
+        public void SetArithmeticCacheValue(string CacheKey, string Operator , string Value) => Add("SM", CacheKey + GS + Operator + GS + Value);
+        public void SetArithmeticCacheValue(string CacheKey, string Operator , int Value) => SetArithmeticCacheValue(CacheKey, Operator, Value);
+        // Operation: textafter, textafterlast, textbefore, textbeforelast, substring, remove
+        public void SetTextOperationCacheValue(string CacheKey, string Operation , string Value1, string Value2) => Add("ST", CacheKey + GS + Operation + GS + Value1 + GS + Value2);
+        public void SetTextOperationCacheValue(string CacheKey, string Operation , int Value1, int Value2) => SetTextOperationCacheValue(CacheKey, Operation, Value1.ToString(), Value2.ToString());
 
         // Call
         public void LoadUrl(string InputPlace, string Url) => Add("lu" + InputPlace, Url);
@@ -582,20 +608,20 @@ namespace CodeBehind
         public void ReplaceStartTag(string InputPlace, string Value, string NewValue) => Add("gt" + InputPlace, "s" + GS + Value + GS + NewValue);
 
         // Pre Runner
-        public void AssignDelay(int MiliSecond, int Index = -1)
+        public void AssignDelay(int Millisecond, int Index = -1)
         {
             string currentLine = GetLineByIndex(Index);
             if (string.IsNullOrEmpty(currentLine))
                 return;
 
             string[] parts = currentLine.Split('=', 2);
-            string newName = ":" + MiliSecond + ")" + parts[0];
+            string newName = ":" + Millisecond + ")" + parts[0];
             string newValue = parts.Length > 1 ? parts[1] : "";
 
             UpdateLineByIndex(Index, newName, newValue);
         }
 
-        public void AssignDelayChange(int MiliSecond, int Index = -1)
+        public void AssignDelayChange(int Millisecond, int Index = -1)
         {
             string currentLine = GetLineByIndex(Index);
             if (string.IsNullOrEmpty(currentLine))
@@ -610,26 +636,26 @@ namespace CodeBehind
                 currentName = currentName.Substring(closingBracket + 1);
             }
 
-            string newName = ":" + MiliSecond + ")" + currentName;
+            string newName = ":" + Millisecond + ")" + currentName;
             string newValue = parts.Length > 1 ? parts[1] : "";
 
             UpdateLineByIndex(Index, newName, newValue);
         }
 
-        public void AssignInterval(int MiliSecond, string Id = null, int Index = -1)
+        public void AssignInterval(int Millisecond, string Id = null, int Index = -1)
         {
             string currentLine = GetLineByIndex(Index);
             if (string.IsNullOrEmpty(currentLine))
                 return;
 
             string[] parts = currentLine.Split('=', 2);
-            string newName = "(" + MiliSecond + (!string.IsNullOrEmpty(Id) ? "|" + Id : "") + ")" + parts[0];
+            string newName = "(" + Millisecond + (!string.IsNullOrEmpty(Id) ? "|" + Id : "") + ")" + parts[0];
             string newValue = parts.Length > 1 ? parts[1] : "";
 
             UpdateLineByIndex(Index, newName, newValue);
         }
 
-        public void AssignIntervalChange(int MiliSecond, string Id = null, int Index = -1)
+        public void AssignIntervalChange(int Millisecond, string Id = null, int Index = -1)
         {
             string currentLine = GetLineByIndex(Index);
             if (string.IsNullOrEmpty(currentLine))
@@ -644,7 +670,7 @@ namespace CodeBehind
                 currentName = currentName.Substring(closingBracket + 1);
             }
 
-            string newName = "(" + MiliSecond + (!string.IsNullOrEmpty(Id) ? "|" + Id : "") + ")" + currentName;
+            string newName = "(" + Millisecond + (!string.IsNullOrEmpty(Id) ? "|" + Id : "") + ")" + currentName;
             string newValue = parts.Length > 1 ? parts[1] : "";
 
             UpdateLineByIndex(Index, newName, newValue);
@@ -834,6 +860,8 @@ namespace CodeBehind
         }
         public void StartBracket() => Add("{");
         public void EndBracket() => Add("}");
+
+        // High-Level Methods
         // Used Then In Condition And Loop Methods
         public WebForms Then(WebForms newForm)
         {
@@ -937,6 +965,71 @@ namespace CodeBehind
             return Repeat(newForm, repeat, index);
         }
 
+        public WebForms Isole(WebForms newForm, string InputPlace)
+        {
+            if (newForm == null)
+                return this;
+
+            string bodyData = newForm.GetWebFormsData();
+
+            if (string.IsNullOrEmpty(bodyData))
+                return this;
+
+            WebForms form = new WebForms();
+            form.StartTransientDOM(InputPlace);
+
+            AppendForm(form);
+            newForm.EndTransientDOM();
+            AppendForm(newForm);
+
+            return this;
+        }
+
+        public WebForms Isole(System.Action<WebForms> configure, string InputPlace)
+        {
+            var newForm = new WebForms();
+            configure(newForm);
+            return Isole(newForm, InputPlace);
+        }
+
+        // The Render Method is Sensitive to DOM Changes; It is Recommended to Assign a Stable ID to the Selected Element.
+        // This Method Utilizes the Transient DOM; Therefore, When Selecting InputPlaces, You Must Consider the Root of the Selected InputPlace Within the Method.
+        public WebForms Render(WebForms newForm, string InputPlace, string Key = "", bool Permanent = false)
+        {
+            if (newForm == null)
+                return this;
+
+            string bodyData = newForm.GetWebFormsData();
+
+            if (string.IsNullOrEmpty(bodyData))
+                return this;
+
+            if (string.IsNullOrEmpty(Key))
+                Key = InputPlace;
+
+            WebForms form = new WebForms();
+
+            form.Exist(Permanent ? Fetch.Cache(Key) : Fetch.Save(Key));
+                form.Rollback(InputPlace, Key, Permanent);
+            form.Else();
+                form.Snapshot(InputPlace, Key, Permanent);
+
+            form.StartTransientDOM(InputPlace);
+
+            AppendForm(form);
+            newForm.EndTransientDOM();
+            AppendForm(newForm);
+
+            return this;
+        }
+
+        public WebForms Render(System.Action<WebForms> configure, string InputPlace, string Key = "", bool Permanent = false)
+        {
+            var newForm = new WebForms();
+            configure(newForm);
+            return Render(newForm, InputPlace, Key, Permanent);
+        }
+
         // Async
         // It Supports Brackets and Then
         public WebForms Async()
@@ -944,8 +1037,8 @@ namespace CodeBehind
             Add("{(a)");
             return this;
         }
-        public void Delay(string MiliSecond) => Add("De", MiliSecond);
-        public void Delay(int MiliSecond) => Delay(MiliSecond.ToString());
+        public void Delay(string Millisecond) => Add("De", Millisecond);
+        public void Delay(int Millisecond) => Delay(Millisecond.ToString());
 
         // Option
         public void ChangeOption(string Name, string Value) => Add("co", Name + GS + Value);
@@ -1195,7 +1288,7 @@ namespace CodeBehind
         }
 
         // MethodName: The Method Name May Need to Include the Class Name, Separated by a Period. Example: MyClassName.MyMethodName
-        public static string WasmMethod(string WasmLanguage, string WasmUrl, string MethodName, object[] Args = null, string Key = ".")
+        public static string WasmMethod(string WasmLanguage, string WasmUrl, string MethodName, object[] Args = null)
         {
             string ReturnValue = "@wA" + WasmLanguage + RS + WasmUrl + RS + MethodName;
 
@@ -1232,7 +1325,7 @@ namespace CodeBehind
             return ReturnValue;
         }
 
-        // Data
+        // Date
         public const string DateYear = "@dy";
         // Month In JavaScript Is Start From Index 0, Month In WebForms Core Is Start From Index 1 
         public const string DateMonth = "@dm";
@@ -1268,8 +1361,9 @@ namespace CodeBehind
         public static string GetTextAlign(string InputPlace) => "@$T" + InputPlace;
         public static string GetNodeLength(string InputPlace) => "@$L" + InputPlace;
         public static string GetIsVisible(string InputPlace) => "@$V" + InputPlace;
+        public static string GetTagHash(string InputPlace) => "@$H" + InputPlace;
 
-        // Save
+        // Save and Cache
         public static string HasHash(string Hash) => "@HH" + Hash;
         public static string Cookie(string Key) => "@co" + Key;
         public static string Save(string Key = ".") => "@cs" + Key;
@@ -1359,13 +1453,10 @@ namespace CodeBehind
 
     public class WasmLanguage
     {
-        // The Suffix "Mediator" Means You Must Call the JavaScript Interface. In Other Cases, the WASM File Should Be Called Directly.
         public const string C = "c";
         public const string CPP = "c";
         public const string Rust = "rust";
         public const string CSharp = "csharp";
-        // .NET WebCIL Container. The "dotnet.js" File Should Be Invoked.
-        public const string CSharpMediator = "csharp-m";
         public const string GO = "go";
         public const string JAVA = "java";
         public const string AssemblyScript = "as";
@@ -1563,7 +1654,7 @@ namespace CodeBehind
             if (Text.Length < 1)
                 return Value;
 
-            return Text + "?" + Value.Replace("|", "$[vb];").Replace("?", "$[qu];");
+            return Text + "?" + Value.Replace("|", "$[vb];").Replace("?", "$[qu];").Replace("=", "$[eq];");
         }
 
         public static string AppendFetchReplace(this string Text, string SearchValue, string Value)
