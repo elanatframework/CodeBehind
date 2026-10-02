@@ -122,7 +122,7 @@ Program File: Program.cs
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCodeBehind();
+builder.Services.AddCodeBehind(!builder.Environment.IsDevelopment());
 
 var app = builder.Build();
 
