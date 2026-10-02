@@ -126,7 +126,8 @@ builder.Services.AddCodeBehind();
 
 var app = builder.Build();
 
-app.UseCodeBehind();
+app.UseCodeBehind();    // UseCodeBehindAsync() for asynchronous execution
+                        // UseCodeBehindNextNotFound() to continue if the page is not found
 
 app.Run();
 ```
