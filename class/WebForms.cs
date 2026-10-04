@@ -499,7 +499,7 @@ namespace CodeBehind
         public void SetFormatSaveValue(string CacheKey, string Regex, string Replacement) => Add("SF", CacheKey + GS + Regex + GS + Replacement.Replace('\n'.ToString(), "$[ln];"));
         // Operator: +, -, *, /, %, //, **
         public void SetSaveValue(string CacheKey, string Operator , string Value) => Add("SM", CacheKey + GS + Operator + GS + Value);
-        public void SetSaveValue(string CacheKey, string Operator , int Value) => SetSaveValue(CacheKey, Operator, Value);
+        public void SetSaveValue(string CacheKey, string Operator , int Value) => SetSaveValue(CacheKey, Operator, Value.ToString());
         // Operation: textafter, textafterlast, textbefore, textbeforelast, substring, remove
         public void SetTextOperationSaveValue(string CacheKey, string Operation , string Value1, string Value2) => Add("ST", CacheKey + GS + Operation + GS + Value1 + GS + Value2);
         public void SetTextOperationSaveValue(string CacheKey, string Operation , int Value1, int Value2) => SetTextOperationSaveValue(CacheKey, Operation, Value1.ToString(), Value2.ToString());
@@ -540,7 +540,7 @@ namespace CodeBehind
         public void SetFormatCacheValue(string CacheKey, string Regex, string Replacement) => Add("CF", CacheKey + GS + Regex + GS + Replacement.Replace('\n'.ToString(), "$[ln];"));
         // Operator: +, -, *, /, %, //, **
         public void SetArithmeticCacheValue(string CacheKey, string Operator , string Value) => Add("CM", CacheKey + GS + Operator + GS + Value);
-        public void SetArithmeticCacheValue(string CacheKey, string Operator , int Value) => SetArithmeticCacheValue(CacheKey, Operator, Value);
+        public void SetArithmeticCacheValue(string CacheKey, string Operator , int Value) => SetArithmeticCacheValue(CacheKey, Operator, Value.ToString());
         // Operation: textafter, textafterlast, textbefore, textbeforelast, substring, remove
         public void SetTextOperationCacheValue(string CacheKey, string Operation , string Value1, string Value2) => Add("CT", CacheKey + GS + Operation + GS + Value1 + GS + Value2);
         public void SetTextOperationCacheValue(string CacheKey, string Operation , int Value1, int Value2) => SetTextOperationCacheValue(CacheKey, Operation, Value1.ToString(), Value2.ToString());
