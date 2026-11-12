@@ -8,6 +8,8 @@ The options file in CodeBehind is as follows:
 [CodeBehind options]; do not change order
 view_path=wwwroot
 move_view_from_wwwroot=true
+dll_path=wwwroot/bin
+move_dll_from_wwwroot_bin=true
 rewrite_aspx_file_to_directory=false
 access_aspx_file_after_rewrite=false
 ignore_default_after_rewrite=true
@@ -23,7 +25,6 @@ default_role=guest
 web_forms_script_path=/script
 auto_create_web_forms_script=true
 recreate_web_forms_script_after_recompile=false
-web_forms_view_place=<body>
 use_default_controller=true
 default_controller=DefaultController
 use_segment_in_default_controller=true
@@ -36,6 +37,11 @@ put_two_underlines_equal_to_dash_for_controller=false
 set_default_pages=true
 max_web_socket_connections_per_client=3
 web_socket_buffer_size=4096
+send_view_only_in_get_method=false
+ignore_layout_for_post_back=true
+set_text_html_content_type_for_post_back=true
+sse_interval=1000
+max_sse_connections_per_client=3
 ```
 
 **The possibility to load aspx page names as directory names**
@@ -238,12 +244,6 @@ If the `auto_create_web_forms_script` option is enabled, the WebFormsJS file wil
 (`recreate_web_forms_script_after_recompile=false`)
 
 If the `recreate_web_forms_script_after_recompile` option is enabled, the WebFormsJS file will be created after each compile.
-
-**Determining the location of the server response tag**
-
-(`web_forms_view_place=<body>`)
-
-The `web_forms_view_place` option is for situations where the Action Control is not present in the response and determines the tag location of the server's response.
 
 **Specify the default Controller**
 
