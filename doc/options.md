@@ -5,7 +5,7 @@ There is an options file in the code_behind/options.ini path. This file will con
 The options file in CodeBehind is as follows:
 
 ```ini
-[CodeBehind options]; do not change order
+[CodeBehind-options]
 view_path=wwwroot
 move_view_from_wwwroot=true
 dll_path=wwwroot/bin
