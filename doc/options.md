@@ -417,7 +417,7 @@ When enabled, this setting restricts View content delivery to GET requests. For 
 
 **Ignore Layout for Post-Back Requests**
 
-(`ignore_layout_for_post_back=true`)
+(`ignore_layout_for_post_back=false`)
 
 When enabled, the server automatically excludes the Layout from the response whenever it detects a Post-Back request sent by WebFormsJS, identified by the `Content-Type` header. This eliminates the need for developers to manually check whether a request originates from WebFormsJS and conditionally disable Layout rendering.
 
